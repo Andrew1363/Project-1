@@ -120,7 +120,7 @@ function[multi] = thuchanh8(a , N)
 end
 
 %---------------------------------------------
-% Cau 23
+% Cau 23 tích phân theo phương pháp điểm giữa 
 % function = exp(x) * atan(x^2) / cos(x);
 % dientich = thuchanh9(4,7,28,@(x) exp(x) * atan(x^2) / cos(x))
 function[S] = thuchanh9(a,b,N,f)
@@ -136,7 +136,7 @@ function[S] = thuchanh9(a,b,N,f)
 end
 
 %---------------------------------------------
-% Cau 24
+% Cau 24 tìm nghiệm theo phương pháp chia nửa
 % f = 4*x^3 - 13*x^2 + 13*x - 10
 function[x] = thuchanh10(a, b, f)
     fa = f(a);
@@ -153,14 +153,14 @@ function[x] = thuchanh10(a, b, f)
                 fa = fx;
             end
         else
-            disp('Phuong trinh vo nghiem trong khoang tren')
+            disp('Phuong trinh vo nghiem');
             break;
         end
     end 
 end
 
 %---------------------------------------------
-% Cau 26
+% Cau 26 euler
 % f = 4*x^2 - 7*y
 % co the khong can lap mang x
 function[y] = thuchanh11(xmax,y0,h,f)
@@ -169,6 +169,19 @@ function[y] = thuchanh11(xmax,y0,h,f)
     y(1) = y0;
     for i = 2 : length(x)
         y(i) = y(i -1) + h* f(x(i-1), y(i-1));
+    end
+end
+
+% Cau 26 euler bien doi
+% f = 4*x^2 - 7*y
+function[y] = thuchanh11(xmax,y0,h,f)
+    x = 0 : h : xmax;
+    y = zeros(1,length(x));
+    y(1) = y0;
+    y1 = zeros(1,length(x));
+    for k = 1 : length(x)
+        y1(k+1) = y(k) + h*f(x(k),y(k));
+        y(k+1) = y(k) + h/2 * f(x(k),y(k)) + h/2 * f(x(k+1), y1(k+1));
     end
 end
 
@@ -312,30 +325,22 @@ end
 % chuoi bit a = [1 1 0 0 1 0 1 1 0 0 1 0 1 0 1 1 1 1 1 1 1 0 0 1 0 1 1 0]
 % Ma hoa chuoi bit theo dang NRZ
 % [t,y,code] = cau5a(a,1e6,256)
-function[t,y,code]= cau5a(a,R,Ns,type)
-    Tb = 1/R;
+function[t,y,code]= cau5a(a,b)
+    Ns = 256;                   % số lượng mẫu
+    Tb = b;                     % chu kỳ bit
     Nb = length(a);
     time = Tb * Nb;
     ts = time/(Ns-1);
     t = 0: ts:time;
     y = zeros(size(t));
     code=[];
-    if nargin <= 3
-        type = 'unipol';
-    end
     for k = 1 : Ns
         n = fix(t(k)/Tb) + 1;    %Ham fix lay phan nguyen, bo phan sau day phay
         if n >= Nb
             n = Nb;
         end
-        switch(type)
-            case 'unipol'
-                y(k) = a(n);
-                code(n) = a(n);
-            case 'pol'
-                y(k) = 2*a(n)-1;
-                code(n) = 2*a(n)-1;
-        end
+            y(k) = a(n);
+            code(n) = a(n);
     end
     plot(t,y)
 end
@@ -344,9 +349,10 @@ end
 % cau 5 b phan 2
 % chuoi bit a = [1 1 0 0 1 0 1 1 0 0 1 0 1 0 1 1 1 1 1 1 1 0 0 1 0 1 1 0]
 % Ma hoa chuoi bit theo dang RZ
-% [t,y,code] = cau5b(a,1e6,256)
-function[t,y,code]= cau5b(a,R,Ns)
-    Tb = 1/R;
+% [t,y,code] = cau5b(a,b)
+function[t,y,code]= cau5b(a,b)
+    Ns = 256;               % số lượng mẫu
+    Tb = b;                 % chu kỳ bit
     Nb = length(a);
     time = Tb * Nb;
     ts = time/(Ns-1);
@@ -382,9 +388,10 @@ end
 % cau 5 c phan 2
 % chuoi bit a = [1 1 0 0 1 0 1 1 0 0 1 0 1 0 1 1 1 1 1 1 1 0 0 1 0 1 1 0]
 % Ma hoa chuoi bit theo dang AMI
-% [t,y,code] = cau5c(a,1e6,256)
-function[t,y,code]= cau5c(a,R,Ns)
-    Tb = 1/R;
+% [t,y,code] = cau5c(a,b)
+function[t,y,code]= cau5c(a,b)
+    Ns = 256;               % số lượng mẫu
+    Tb = b;                 % chu kỳ bit
     Nb = length(a);
     time = Tb * Nb;
     ts = time/(Ns-1);
